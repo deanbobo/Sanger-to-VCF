@@ -200,7 +200,7 @@ bedout.write(str(bedpos)+'\n')
 
 covered_regions=df[df['cov']==2].count()['cov']
 uncovered_regions=df[df['cov']<2].count()['cov']
-print 'Result: There are '+str(covered_regions)+' covered region and '+str(uncovered_regions)+' uncovered regions\n'
+print 'Result: The two alignments covered  '+str(covered_regions)+' bases.  There were '+str(uncovered_regions)+' uncovered regions\n'
 
 bedout.close()
 vcfout.close()
