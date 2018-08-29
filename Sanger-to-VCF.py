@@ -200,7 +200,7 @@ bedout.write(str(bedpos)+'\n')
 
 covered_regions=df[df['cov']==2].count()['cov']
 uncovered_regions=df[df['cov']<2].count()['cov']
-print 'Result: The two alignments covered  '+str(covered_regions)+' bases.  There were '+str(uncovered_regions)+' bases that were not covered by both sequences (so they were excluded).\n'
+print 'Result:\tChr:'+str(fa1_chr)+'\tThe two sequnces covered '+str(covered_regions)+' bases. '+str(uncovered_regions)+' bases were not covered by both Sanger sequences.\n'
 
 bedout.close()
 vcfout.close()
