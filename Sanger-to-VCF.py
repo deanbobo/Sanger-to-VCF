@@ -12,7 +12,7 @@ parser.add_argument('-fa1', metavar='<fa1>',help='First fasta file (1 seqeunce p
 parser.add_argument('-fa2', metavar='<fa1>',help='Second fasta file (1 seqeunce per file)', required=True)
 parser.add_argument('-verbose', action='store_true', help='prints more information [verbose mode]')
 parser.add_argument('-out',metavar='<out>', help='Output file. Note: ".vcf" will be appended automatically', required=True)
-parser.add_argument('-db', metavar='<db>', default='/vault/public/GRCh37/GRCh37.fa')
+parser.add_argument('-db', metavar='<db>', required=True)
 
 args = parser.parse_args()
 
@@ -22,17 +22,17 @@ fa2=args.fa2
 out=args.out
 db=args.db
 
-print 'using reference: '+str(db)
+print('using reference: '+str(db))
 #blast the two sequences
 
 cmd1='blastn -query '+fa1+' -db '+db+' -outfmt "6 qseqid sseqid sstart btop send" -parse_deflines | head -n 1 > fa1.aln.tmp'
-print 'running command: '+str(cmd1)
+print('running command: '+str(cmd1))
 os.system(cmd1)
 fa1_blast = open('fa1.aln.tmp').read().rstrip().split('\t')
 os.remove('fa1.aln.tmp')
 
 cmd2='blastn -query '+fa2+' -db '+db+' -outfmt "6 qseqid sseqid sstart btop send" -parse_deflines | head -n 1 > fa2.aln.tmp'
-print 'running command: '+str(cmd2)
+print('running command: '+str(cmd2))
 os.system(cmd2)
 fa2_blast = open('fa2.aln.tmp').read().rstrip().split('\t')
 os.remove('fa2.aln.tmp')
@@ -51,7 +51,7 @@ fa2_btop_string = fa2_blast[3]
 fa2_stop = int(fa2_blast[4])
 
 if fa1_chr != fa2_chr:
-	print "Cannot continue. The sequences did not align to the same chromosome.\n"
+	print('Cannot continue. The sequences did not align to the same chromosome.\n')
 	exit(0)
 
 aln_start=min(fa1_start, fa2_start)
@@ -134,7 +134,7 @@ for element in fa2_btop:
 			
 			else: #it it is a mismatch, add to coverage, increment position
 				if df['ref'][fa2_pos] and df['ref'][fa2_pos]!=j[1:2]:
-					print  "Error: the reference allele identified at position ",fa2_pos,"  differ between the two alignments. Cannot continue."
+					print('Error: the reference allele identified at position ',fa2_pos,'  differ between the two alignments. Cannot continue.')
 					exit(1)
 				else:
 					df['cov'][fa2_pos]+=1 #add 1 to coverage
@@ -200,10 +200,7 @@ bedout.write(str(bedpos)+'\n')
 
 covered_regions=df[df['cov']==2].count()['cov']
 uncovered_regions=df[df['cov']<2].count()['cov']
-print 'Result:\tChr:'+str(fa1_chr)+'\tThe two sequnces covered '+str(covered_regions)+' bases. '+str(uncovered_regions)+' bases were not covered by both Sanger sequences.\n'
+print('Result:\tChr:'+str(fa1_chr)+'\tThe two sequnces covered '+str(covered_regions)+' bases. '+str(uncovered_regions)+' bases were not covered by both Sanger sequences.\n')
 
 bedout.close()
 vcfout.close()
-
-
-
