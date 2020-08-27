@@ -22,17 +22,22 @@ fa2=args.fa2
 out=args.out
 db=args.db
 
-print('using reference: '+str(db))
+pd.options.mode.chained_assignment = None
+
+if args.verbose:
+	print('using reference: '+str(db))
 #blast the two sequences
 
 cmd1='blastn -query '+fa1+' -db '+db+' -outfmt "6 qseqid sseqid sstart btop send" -parse_deflines | head -n 1 > fa1.aln.tmp'
-print('running command: '+str(cmd1))
+if args.verbose:
+	print('running command: '+str(cmd1))
 os.system(cmd1)
 fa1_blast = open('fa1.aln.tmp').read().rstrip().split('\t')
 os.remove('fa1.aln.tmp')
 
 cmd2='blastn -query '+fa2+' -db '+db+' -outfmt "6 qseqid sseqid sstart btop send" -parse_deflines | head -n 1 > fa2.aln.tmp'
-print('running command: '+str(cmd2))
+if args.verbose:
+	print('running command: '+str(cmd2))
 os.system(cmd2)
 fa2_blast = open('fa2.aln.tmp').read().rstrip().split('\t')
 os.remove('fa2.aln.tmp')
@@ -200,7 +205,8 @@ bedout.write(str(bedpos)+'\n')
 
 covered_regions=df[df['cov']==2].count()['cov']
 uncovered_regions=df[df['cov']<2].count()['cov']
-print('Result:\tChr:'+str(fa1_chr)+'\tThe two sequnces covered '+str(covered_regions)+' bases. '+str(uncovered_regions)+' bases were not covered by both Sanger sequences.\n')
+if args.verbose:
+	print('Result:\tChr:'+str(fa1_chr)+'\tThe two sequnces covered '+str(covered_regions)+' bases. '+str(uncovered_regions)+' bases were not covered by both Sanger sequences.\n')
 
 bedout.close()
 vcfout.close()
